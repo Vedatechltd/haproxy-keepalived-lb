@@ -1,7 +1,7 @@
 services:
   haproxy:
     image: haproxy:latest
-    container_name: haproxy&
+    container_name: haproxy
     ports:
       - "6443:6443"
     volumes:
