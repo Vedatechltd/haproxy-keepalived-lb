@@ -1,0 +1,30 @@
+services:
+  haproxy:
+    image: haproxy:latest
+    container_name: haproxy&
+    ports:
+      - "6443:6443"
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    networks:
+      - k3s-net
+    restart: unless-stopped
+
+  keepalived:
+    image: osixia/keepalived:latest
+    container_name: keepalived
+    cap_add:
+      - NET_ADMIN
+      - NET_BROADCAST
+      - NET_RAW
+    network_mode: host
+    environment:
+      KEEPALIVED_INTERFACE: enp1s0  # Make sure this matches the host interface!
+      KEEPALIVED_VIRTUAL_IPS: "192.168.0.9" # Change to your desired VIP. This is the IP you'll use to access the cluster.
+      KEEPALIVED_STATE: "MASTER" 
+
+    restart: unless-stopped
+
+networks:
+  k3s-net:
+    driver: bridge
